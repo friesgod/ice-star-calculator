@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>冰星創思｜電商費用試算器（V0.2 測試版）</title>
+<style>
+:root{color-scheme:light;--bg:#f4f6f9;--card:#fff;--ink:#172234;--muted:#5d6a7b;--border:#dbe1e9;--accent:#2558b4;--soft:#e9f0fc}html[data-theme=dark]{color-scheme:dark;--bg:#10151d;--card:#1c2530;--ink:#f1f4f9;--muted:#b2becc;--border:#3b4655;--accent:#91b8ff;--soft:#283c57}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 system-ui,-apple-system,"Noto Sans TC",sans-serif}main{max-width:940px;margin:auto;padding:16px}.top{display:flex;justify-content:space-between;align-items:center;gap:12px}.top h1{font-size:1.25rem;margin:0}.sub{color:var(--muted);font-size:.85rem;margin:5px 0 18px}.tabs{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;margin-bottom:14px}.tabs button{white-space:nowrap}.panel{background:var(--card);border:1px solid var(--border);border-radius:13px;padding:18px;margin-bottom:14px}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.field{display:flex;flex-direction:column;gap:5px}.field label{font-size:.9rem;font-weight:600}input,select,button{font:inherit;border:1px solid var(--border);border-radius:9px;padding:10px;background:var(--card);color:var(--ink);min-width:0}button{cursor:pointer}button:hover{border-color:var(--accent)}button.active,.primary{background:var(--accent);color:var(--bg);border-color:var(--accent)}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:15px}.note{color:var(--muted);font-size:.83rem}.result{overflow-x:auto}table{width:100%;border-collapse:collapse;min-width:550px}th,td{text-align:left;border-bottom:1px solid var(--border);padding:10px 8px}th{font-size:.86rem}td.num{text-align:right;font-variant-numeric:tabular-nums}.status{padding:9px 11px;background:var(--soft);border-radius:8px;margin:10px 0}.history{display:flex;flex-direction:column;gap:8px}.record{border:1px solid var(--border);border-radius:9px;padding:10px;display:flex;justify-content:space-between;align-items:center;gap:10px}.record small{display:block;color:var(--muted)}.record .actions{margin:0}.record button{padding:6px 10px}h2{font-size:1.08rem;margin:0 0 12px}h3{font-size:1rem;margin:14px 0 8px}.hidden{display:none!important}@media(max-width:580px){main{padding:10px}.panel{padding:13px}.top h1{font-size:1.07rem}.grid{grid-template-columns:1fr}.record{align-items:flex-start;flex-direction:column}.record .actions{width:100%}button{padding:9px}}
+</style>
+</head>
+<body><main>
+<header class="top"><h1>冰星創思｜電商費用試算器</h1><button id="themeBtn" type="button">切換主題</button></header>
+<p class="sub">V0.2 測試版｜銀角零卡費率已依提供表格加入，其他平台費率待設定，資料僅保存在本機瀏覽器。</p>
+<nav class="tabs" aria-label="平台分頁"><button data-tab="shopee" class="active">蝦皮</button><button data-tab="ruten">露天</button><button data-tab="yahoo">Y拍</button><button data-tab="zero">銀角零卡</button></nav>
+<section class="panel"><h2 id="pageTitle">蝦皮｜費用試算</h2><div class="grid">
+<div class="field" id="categoryField"><label for="category">商品分類（暫定示例）</label><select id="category"><option value="laptop">筆記型電腦</option><option value="parts">電腦零組件</option><option value="peripheral">電腦周邊</option><option value="other">其他</option></select></div>
+<div class="field" id="costField"><label for="cost">商品成本（NT$）</label><input id="cost" type="number" min="0" step="0.01" value="10000"></div>
+<div class="field"><label for="price">商品售價（NT$）</label><input id="price" type="number" min="0" step="0.01" value="12500"></div>
+<div class="field" id="monthsField"><label for="months">分期期數（示意）</label><select id="months"><option value="3">3 期</option><option value="6" selected>6 期</option><option value="12">12 期</option></select></div>
+</div><div class="actions"><button class="primary" id="saveBtn">儲存本次試算</button><button id="resetBtn">清空輸入</button></div><p class="note">儲存紀錄會保留輸入值與費率版本；蝦皮、露天、Y拍尚未設定正式費率，不產生手續費或淨利估值。</p></section>
+<section class="panel"><h2>試算結果</h2><div id="baseResult" class="status"></div><div id="platformResults" class="result"><table><thead><tr><th>付款方式</th><th>平台／付款手續費</th><th>預估實收</th><th>預估淨利</th></tr></thead><tbody id="resultRows"></tbody></table></div><div id="zeroResults" class="hidden"><p class="status">銀角零卡分期手續費由<strong>買家負擔</strong>。輸入商品售價，即可同時比較六種期數。</p><div class="result"><table><thead><tr><th>期數</th><th>費率</th><th>買家手續費</th><th>買家總付款</th><th>平均每期</th></tr></thead><tbody id="zeroRows"></tbody></table></div><p class="note">計算依據：總付款＝商品售價＋（商品售價 × 費率）；平均每期＝總付款 ÷ 期數。金額顯示至小數點後兩位，實際每期帳單及尾差依銀角零卡結帳資訊為準。</p></div></section>
+<section class="panel"><div class="top"><h2>歷史紀錄 <span id="count">0 / 30</span></h2><button id="clearBtn">清除全部</button></div><p class="note">每個瀏覽器各自儲存最多 30 筆；新增第 31 筆時自動刪除最舊紀錄。清除網站資料可能使紀錄消失。</p><div class="history" id="history"></div></section>
+<footer class="note">本工具為功能測試版。平台費率、分類、付款條件與銀角零卡費率依店長提供的換算表試算；正式交易以平台結帳資訊為準。</footer>
+</main>
+<script>
+'use strict';
+// ====== 可維護區塊 1：基本設定 ======
+const STORAGE_KEY='icestar_calculator_history_v1';
+const THEME_KEY='icestar_calculator_theme_v1';
+const MAX_RECORDS=30;
+const PLATFORM_NAMES={shopee:'蝦皮',ruten:'露天',yahoo:'Y拍',zero:'銀角零卡'};
+const $=id=>document.getElementById(id);
+let currentTab='shopee';
+let records=[];
+const money=n=>new Intl.NumberFormat('zh-TW',{maximumFractionDigits:2}).format(n);
+const safeNumber=id=>{const el=$(id),n=Number(el.value);return el.value.trim()!==''&&Number.isFinite(n)&&n>=0?n:null};
+function readRecords(){try{const parsed=JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]');return Array.isArray(parsed)?parsed.filter(x=>x&&typeof x==='object'&&PLATFORM_NAMES[x.platform]).slice(-MAX_RECORDS):[]}catch(e){console.warn('歷史紀錄無法讀取',e);return []}}
+function persist(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(records));return true}catch(e){alert('瀏覽器無法儲存紀錄，可能是隱私模式或儲存空間限制。');return false}}
+// ====== 可維護區塊 2：費率計算 ======
+// 銀角零卡費率：取自「銀角零卡_商家手續費換算表.xlsx」之「費率表」。
+// 其他平台費率仍待正式資料，不自行假設。
+const ZERO_RATES=[{months:3,rate:0.026},{months:6,rate:0.0425},{months:9,rate:0.06},{months:12,rate:0.075},{months:18,rate:0.11},{months:24,rate:0.14}];
+function calculate(){
+ const cost=safeNumber('cost'),price=safeNumber('price');
+ const valid=price!==null&&(currentTab==='zero'||cost!==null);
+ $('baseResult').textContent=!valid?'請輸入有效的非負金額。':currentTab==='zero'?`商品售價 NT$ ${money(price)}｜六種期數試算如下`:`售價 NT$ ${money(price)} − 成本 NT$ ${money(cost)} = 未扣費價差 NT$ ${money(price-cost)}`;
+ $('platformResults').classList.toggle('hidden',currentTab==='zero');
+ $('zeroResults').classList.toggle('hidden',currentTab!=='zero');
+ if(currentTab==='zero'){
+   $('zeroRows').innerHTML=valid?ZERO_RATES.map(({months,rate})=>{
+     const fee=price*rate,total=price+fee,average=total/months;
+     return `<tr><td>${months} 期</td><td class="num">${(rate*100).toFixed(2)}%</td><td class="num">NT$ ${money(fee)}</td><td class="num">NT$ ${money(total)}</td><td class="num">NT$ ${money(average)}</td></tr>`;
+   }).join(''):'<tr><td colspan="5">請輸入商品售價</td></tr>';
+ }else{
+   $('resultRows').innerHTML=['貨到付款','信用卡一次付清',`信用卡 ${$('months').value} 期`].map(method=>`<tr><td>${method}</td><td class="num">待設定</td><td class="num">待計算</td><td class="num">待計算</td></tr>`).join('');
+ }
+ return valid;
+}
+function switchTab(tab){
+ if(!PLATFORM_NAMES[tab])return;
+ currentTab=tab;
+ document.querySelectorAll('[data-tab]').forEach(b=>{const active=b.dataset.tab===tab;b.classList.toggle('active',active);b.setAttribute('aria-selected',String(active))});
+ $('pageTitle').textContent=PLATFORM_NAMES[tab]+'｜費用試算';
+ $('categoryField').classList.toggle('hidden',tab==='zero');
+ $('costField').classList.toggle('hidden',tab==='zero');
+ $('monthsField').classList.toggle('hidden',tab==='zero');
+ calculate();
+}
+// ====== 可維護區塊 3：最近 30 筆本機紀錄 ======
+function snapshot(){return{id:(globalThis.crypto&&crypto.randomUUID)?crypto.randomUUID():String(Date.now())+'-'+Math.random(),time:new Date().toISOString(),platform:currentTab,category:$('category').value,cost:$('cost').value,price:$('price').value,months:$('months').value,rateStatus:currentTab==='zero'?'銀角零卡費率表 V0.2':'未設定正式費率'}}
+function save(){if(!calculate()){alert(currentTab==='zero'?'請輸入有效的商品售價':'請輸入有效的成本與售價');return}const old=records;records=[...records,snapshot()].slice(-MAX_RECORDS);if(!persist()){records=old;return}renderHistory()}
+function renderHistory(){$('count').textContent=`${records.length} / ${MAX_RECORDS}`;const area=$('history');area.replaceChildren();if(!records.length){area.textContent='目前尚無紀錄。';return}records.slice().reverse().forEach(rec=>{const wrap=document.createElement('div');wrap.className='record';const info=document.createElement('div');const title=document.createElement('strong');title.textContent=`${PLATFORM_NAMES[rec.platform]}｜售價 NT$ ${money(Number(rec.price)||0)}`;const small=document.createElement('small');small.textContent=`${new Date(rec.time).toLocaleString('zh-TW')}｜成本 NT$ ${money(Number(rec.cost)||0)}｜${rec.rateStatus||'費率狀態未知'}`;info.append(title,small);const actions=document.createElement('div');actions.className='actions';const restore=document.createElement('button');restore.textContent='還原';restore.addEventListener('click',()=>{switchTab(rec.platform);$('category').value=rec.category||'other';$('cost').value=rec.cost??'';$('price').value=rec.price??'';$('months').value=rec.months||'6';calculate();window.scrollTo({top:0,behavior:'smooth'})});const del=document.createElement('button');del.textContent='刪除';del.addEventListener('click',()=>{const old=records;records=records.filter(x=>x.id!==rec.id);if(!persist()){records=old;return}renderHistory()});actions.append(restore,del);wrap.append(info,actions);area.append(wrap)})}
+// ====== 可維護區塊 4：主題 ======
+function applyTheme(theme){document.documentElement.dataset.theme=theme;$('themeBtn').textContent=theme==='dark'?'☀️ 淺色':'🌙 深色'}
+let theme='light';try{theme=localStorage.getItem(THEME_KEY)||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light')}catch(e){}applyTheme(theme);
+$('themeBtn').addEventListener('click',()=>{theme=document.documentElement.dataset.theme==='dark'?'light':'dark';applyTheme(theme);try{localStorage.setItem(THEME_KEY,theme)}catch(e){}});
+document.querySelectorAll('[data-tab]').forEach(b=>b.addEventListener('click',()=>switchTab(b.dataset.tab)));
+['cost','price','category','months'].forEach(id=>$(id).addEventListener('input',calculate));
+$('saveBtn').addEventListener('click',save);
+$('resetBtn').addEventListener('click',()=>{$('cost').value='';$('price').value='';$('category').value='laptop';$('months').value='6';calculate()});
+$('clearBtn').addEventListener('click',()=>{if(!records.length)return;if(!confirm('確定清除全部歷史紀錄？'))return;const old=records;records=[];if(!persist()){records=old;return}renderHistory()});
+records=readRecords();switchTab('shopee');renderHistory();
+</script></body></html>
