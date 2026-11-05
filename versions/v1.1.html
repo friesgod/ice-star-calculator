@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>冰星創思｜電商費用試算器（V0.6 測試版）</title>
+<style>
+:root{color-scheme:light;--bg:#f4f6f9;--card:#fff;--ink:#172234;--muted:#5d6a7b;--border:#dbe1e9;--accent:#2558b4;--soft:#e9f0fc}html[data-theme=dark]{color-scheme:dark;--bg:#10151d;--card:#1c2530;--ink:#f1f4f9;--muted:#b2becc;--border:#3b4655;--accent:#91b8ff;--soft:#283c57}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 system-ui,-apple-system,"Noto Sans TC",sans-serif}main{max-width:940px;margin:auto;padding:16px}.top{display:flex;justify-content:space-between;align-items:center;gap:12px}.top h1{font-size:1.25rem;margin:0}.sub{color:var(--muted);font-size:.85rem;margin:5px 0 18px}.tabs{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;margin-bottom:14px}.tabs button{white-space:nowrap}.panel{background:var(--card);border:1px solid var(--border);border-radius:13px;padding:18px;margin-bottom:14px}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.field{display:flex;flex-direction:column;gap:5px}.field label{font-size:.9rem;font-weight:600}input,select,button{font:inherit;border:1px solid var(--border);border-radius:9px;padding:10px;background:var(--card);color:var(--ink);min-width:0}button{cursor:pointer}button:hover{border-color:var(--accent)}button.active,.primary{background:var(--accent);color:var(--bg);border-color:var(--accent)}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:15px}.note{color:var(--muted);font-size:.83rem}.result{overflow-x:auto}table{width:100.00%;border-collapse:collapse;min-width:550px}th,td{text-align:left;border-bottom:1px solid var(--border);padding:10px 8px}th{font-size:.86rem}td.num{text-align:right;font-variant-numeric:tabular-nums}.status{padding:9px 11px;background:var(--soft);border-radius:8px;margin:10px 0}.history{display:flex;flex-direction:column;gap:8px}.record{border:1px solid var(--border);border-radius:9px;padding:10px;display:flex;justify-content:space-between;align-items:center;gap:10px}.record small{display:block;color:var(--muted)}.record .actions{margin:0}.record button{padding:6px 10px}h2{font-size:1.08rem;margin:0 0 12px}h3{font-size:1rem;margin:14px 0 8px}.hidden{display:none!important}.inline-link{font-size:.82rem;color:var(--accent);text-decoration:underline}.switchline{display:flex;align-items:center;gap:9px;min-height:44px}.switchline input{width:19px;height:19px;accent-color:var(--accent)}.selected-scenario{background:var(--soft)}.selected-scenario td:first-child{font-weight:700}.fee-extra{color:var(--muted);font-size:.82rem}@media(max-width:580px){main{padding:10px}.panel{padding:13px}.top h1{font-size:1.07rem}.grid{grid-template-columns:1fr}.record{align-items:flex-start;flex-direction:column}.record .actions{width:100.00%}button{padding:9px}}
+
+/* V1.0 mobile-first readability */
+body{font-size:17px;line-height:1.65}main{max-width:1000px}.panel{padding:22px}.top h1{font-size:1.55rem}h2{font-size:1.35rem}h3{font-size:1.18rem}.field label{font-size:1.04rem}.note,.inline-link,.sub{font-size:.95rem}input,select,button{min-height:50px;font-size:17px;padding:12px}.group-title{grid-column:1/-1;font-size:1.25rem;font-weight:750;border-bottom:1px solid var(--border);padding:12px 0 5px}.group-title:not(:first-child){margin-top:12px}.scenario-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.scenario-card{border:1px solid var(--border);border-radius:15px;overflow:hidden;background:var(--card)}.scenario-card h3{margin:0;padding:16px 18px;background:var(--soft);font-size:1.2rem}.scenario-content{padding:14px 18px}.detail-line{display:flex;justify-content:space-between;gap:16px;align-items:baseline;padding:9px 0;border-bottom:1px solid var(--border);font-size:1rem}.detail-line span{min-width:0}.detail-line strong{font-variant-numeric:tabular-nums;white-space:nowrap;font-size:1.08rem}.detail-heading{font-weight:750;color:var(--muted);margin-top:14px;padding-top:7px;font-size:.98rem}.profit-area{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 18px;background:var(--soft);font-weight:750}.profit-area small{display:block;font-size:.87rem;font-weight:400;color:var(--muted)}.profit-area strong{font-size:1.65rem;font-variant-numeric:tabular-nums;white-space:nowrap}.positive{color:#147a53}.negative{color:#bd3540}html[data-theme=dark] .positive{color:#62d9a4}html[data-theme=dark] .negative{color:#ff8f96}@media(max-width:760px){.scenario-grid{grid-template-columns:1fr}}@media(max-width:580px){body{font-size:17px}main{padding:10px}.panel{padding:15px}.top h1{font-size:1.25rem}.grid{grid-template-columns:1fr}.group-title{font-size:1.22rem}.scenario-card h3{font-size:1.2rem}.detail-line{font-size:1rem}.detail-line strong{font-size:1.05rem}.profit-area strong{font-size:1.55rem}.tabs button{min-height:48px}}
+</style>
+</head>
+<body><main>
+<header class="top"><h1>冰星創思｜電商費用試算器</h1><button id="themeBtn" type="button">切換主題</button></header>
+<p class="sub">V1.1 測試版｜蝦皮四種費用情境比較；銀角零卡費率依提供表格，其他付款費率待設定，資料僅保存在本機瀏覽器。</p>
+<nav class="tabs" aria-label="平台分頁"><button data-tab="shopee" class="active">蝦皮</button><button data-tab="ruten">露天</button><button data-tab="yahoo">Y拍</button><button data-tab="zero">銀角零卡</button></nav>
+<section class="panel"><h2 id="pageTitle">蝦皮｜費用試算</h2><div class="grid">
+<div class="group-title">① 商品金額</div><div class="field" id="costField"><label for="cost">進價成本（NT$）</label><input id="cost" type="number" min="0" step="0.01" value="10000"><label for="costTax">進價成本稅別</label><select id="costTax"><option value="included">含稅（已含 5.00%）</option><option value="excluded">未稅（另加 5.00%）</option></select></div>
+<div class="field"><label for="price">商品售價（NT$）</label><input id="price" type="number" min="0" step="0.01" value="12500"></div>
+<div class="group-title">② 平台費用與稅務</div><div class="field" id="categoryField"><label for="feeRate">成交手續費（%）</label><a class="inline-link" id="feeHelp" href="https://seller.shopee.tw/edu/article/26470" target="_blank" rel="noopener noreferrer">成交手續費＆金流與系統處理費（蝦皮官方）</a><div id="yahooHelp" class="hidden"><a class="inline-link" href="https://tw.bid.yahoo.com/help/new_auc/fee/FeeHome.html" target="_blank" rel="noopener noreferrer">Yahoo 官方｜拍賣費用說明首頁</a>　<a class="inline-link" href="https://tw.bid.yahoo.com/help/new_auc/fee/FvfFee.html" target="_blank" rel="noopener noreferrer">Yahoo 官方｜交易手續費說明</a></div><input id="feeRate" type="number" min="0" max="100" step="0.01" value="6" inputmode="decimal"><span class="note">例如 5.5 代表售價的 5.50%；請依平台公告填入。</span></div>
+<div class="field"><label for="tax">稅務設定</label><select id="tax"><option value="0">無（0.00%）</option><option value="0.01">稅籍登記（1.00%）</option><option value="0.05">發票（5.00%）</option></select></div>
+<div class="field" id="shippingField"><label>蝦皮免運方案</label><span class="note">方案一：售價 6.00%；方案二：每筆 NT$ 60。下方同時比較兩種方案，實際適用資格與費率以蝦皮公告為準。</span></div>
+<div class="field" id="processingField"><label>蝦皮金流與系統處理費（固定 2.50%）</label><span class="note">試算固定採 2.50%，不提供手動修改；實際費率如有異動須更新程式。</span></div>
+<div class="field" id="rutenField"><label class="switchline"><input id="rutenPromo" type="checkbox">平台營銷促進方案（5.00%）</label><span class="note">依商品成交單價加收 5.00%，單件最高 NT$ 300。</span></div>
+<div class="field" id="preorderField"><label for="preorder">預購訂單（較長備貨）</label><select id="preorder"><option value="0">否（0.00%）</option><option value="0.03">是（3.00%）</option></select></div>
+
+</div><div class="actions"><button class="primary" id="saveBtn">儲存本次試算</button><button id="resetBtn">清空輸入</button></div><p class="note">蝦皮採一般日／活動日 × 兩種免運方案共四組試算；活動日加收 2.00% 已併入活動日成交費，不另重複扣除。各筆平台費用依圖片範例四捨五入至整元；稅費與預購費仍按售價比例估算。未稅進價另加 5.00% 作為成本；實際稅務及平台計費基礎須依適用規定核對。儲存紀錄會保留輸入值與費率版本；蝦皮、露天、Y拍其他付款費率與支援期數尚未設定，分期列僅供介面展示，不產生手續費或淨利估值。</p></section>
+<section class="panel"><h2>試算結果</h2><div id="baseResult" class="status"></div><div id="shopeeCompare" class="hidden"><p class="note">同時比較四種情境。一般日與活動日（成交手續費額外加收 2.00%）均直接列出，免運方案一與二仍需依實際賣場資格確認。</p><div id="shopeeRows" class="scenario-grid"></div><p class="note">平台費逐項四捨五入至整元；範例售價 6,500 元時，金流費 162.5 元顯示 163 元。此為依提供圖片建模的試算，尚未確認免運方案資格、費用上限及平台最終結算取整規則。</p></div><div id="platformResults" class="result"><table><thead><tr><th>付款方式</th><th>平台／付款手續費</th><th>稅務試算</th><th>蝦皮預購費</th><th>活動／促進費</th><th>預估實收</th><th>預估淨利</th></tr></thead><tbody id="resultRows"></tbody></table></div><div id="zeroResults" class="hidden"><p class="status">銀角零卡分期手續費由<strong>買家負擔</strong>，不列入商家扣款。輸入商品售價，即可同時比較六種期數。<span id="zeroTax"></span></p><div class="result"><table><thead><tr><th>期數</th><th>費率</th><th>買家手續費</th><th>買家總付款</th><th>平均每期</th></tr></thead><tbody id="zeroRows"></tbody></table></div><p class="note">計算依據：總付款＝商品售價＋（商品售價 × 費率）；平均每期＝總付款 ÷ 期數。金額顯示為整數元（四捨五入），內部仍以原始數值試算，實際每期帳單及尾差依銀角零卡結帳資訊為準。</p></div></section>
+<section class="panel"><div class="top"><h2>歷史紀錄 <span id="count">0 / 30</span></h2><button id="clearBtn">清除全部</button></div><p class="note">每個瀏覽器各自儲存最多 30 筆；新增第 31 筆時自動刪除最舊紀錄。清除網站資料可能使紀錄消失。</p><div class="history" id="history"></div></section>
+<footer class="note">本工具為功能測試版。平台費率、分類、付款條件與銀角零卡費率依店長提供的換算表試算；正式交易以平台結帳資訊為準。</footer>
+</main>
+<script>
+'use strict';
+// ====== 可維護區塊 1：基本設定 ======
+const STORAGE_KEY='icestar_calculator_history_v1';
+const THEME_KEY='icestar_calculator_theme_v1';
+const MAX_RECORDS=30;
+const platformFeeInputs={shopee:'6',ruten:'2',yahoo:'2.99'};
+const PLATFORM_NAMES={shopee:'蝦皮',ruten:'露天',yahoo:'Y拍',zero:'銀角零卡'};
+const $=id=>document.getElementById(id);
+let currentTab='shopee';
+let records=[];
+const roundTwd=n=>Math.round((n+Number.EPSILON)*100/100);
+const money=n=>new Intl.NumberFormat('zh-TW',{minimumFractionDigits:0,maximumFractionDigits:0}).format(n);
+const percent=n=>Number(n).toFixed(2)+'%';
+const safeNumber=id=>{const el=$(id),n=Number(el.value);return el.value.trim()!==''&&Number.isFinite(n)&&n>=0?n:null};
+function readRecords(){try{const parsed=JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]');return Array.isArray(parsed)?parsed.filter(x=>x&&typeof x==='object'&&PLATFORM_NAMES[x.platform]).slice(-MAX_RECORDS):[]}catch(e){console.warn('歷史紀錄無法讀取',e);return []}}
+function persist(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(records));return true}catch(e){alert('瀏覽器無法儲存紀錄，可能是隱私模式或儲存空間限制。');return false}}
+// ====== 可維護區塊 2：費率計算 ======
+// 銀角零卡費率：取自「銀角零卡_商家手續費換算表.xlsx」之「費率表」。
+// 其他平台費率仍待正式資料，不自行假設。
+const ZERO_RATES=[{months:3,rate:0.026},{months:6,rate:0.0425},{months:9,rate:0.06},{months:12,rate:0.075},{months:18,rate:0.11},{months:24,rate:0.14}];
+function calculate(){
+ const rawCost=safeNumber('cost'),price=safeNumber('price');
+ const cost=rawCost===null?null:rawCost*($('costTax').value==='excluded'?1.05:1);
+ const rutenFee=currentTab==='ruten'&&$('rutenPromo').checked&&price!==null?Math.min(price*0.05,300):0;
+ const promoAmount=price===null?null:rutenFee;
+ const taxRate=Number($('tax').value),preorderRate=currentTab==='shopee'?Number($('preorder').value):0;
+ const taxAmount=price===null?null:price*taxRate,preorderAmount=price===null?null:price*preorderRate;
+ const feeRate=safeNumber('feeRate');
+ const valid=price!==null&&(currentTab==='zero'||(cost!==null&&feeRate!==null&&feeRate<=100));
+ $('baseResult').textContent=!valid?'請輸入有效的非負金額。':currentTab==='zero'?`商品售價 NT$ ${money(price)}｜六種期數試算如下`:`售價 NT$ ${money(price)} − 成本 NT$ ${money(cost)} = 未扣費價差 NT$ ${money(price-cost)}${rawCost!==cost?`（未稅進價已加計 5.00%：NT$ ${money(cost)}）`:""}`;
+ $('platformResults').classList.toggle('hidden',currentTab==='zero'||currentTab==='shopee');
+ $('shopeeCompare').classList.toggle('hidden',currentTab!=='shopee');
+ $('zeroResults').classList.toggle('hidden',currentTab!=='zero');
+ if(currentTab==='zero'){
+   $('zeroTax').textContent=valid?`｜商家稅務試算 NT$ ${money(taxAmount)}（${(taxRate*100).toFixed(0)}%，以商品售價計）`:'';
+   $('zeroRows').innerHTML=valid?ZERO_RATES.map(({months,rate})=>{
+     const fee=price*rate,total=price+fee,average=total/months;
+     return `<tr><td>${months} 期</td><td class="num">${(rate*100).toFixed(2)}%</td><td class="num">NT$ ${money(fee)}</td><td class="num">NT$ ${money(total)}</td><td class="num">NT$ ${money(average)}</td></tr>`;
+   }).join(''):'<tr><td colspan="5">請輸入商品售價</td></tr>';
+ }else if(currentTab==='shopee'){
+   const processingRate=2.5;
+   if(!valid){$('shopeeRows').innerHTML='<p class="status">請輸入有效的售價、成本及費率</p>';return false}
+   const rows=[];
+   for(const isPromo of [false,true])for(const shipping of [1,2]){
+     const commission=roundTwd(price*(feeRate/100+(isPromo?0.02:0)));
+     const processing=roundTwd(price*processingRate/100);
+     const shippingFee=shipping===1?roundTwd(price*0.06):60;
+     const total=commission+processing+shippingFee;
+     const other=taxAmount+preorderAmount;
+     const net=price-total-other;
+     const profit=net-cost;
+     const shippingLabel=shipping===1?'免運方案一（6.00%）':'免運方案二（固定 NT$ 60）';
+     const taxValue=taxAmount,preorderValue=preorderAmount;
+     const pct=price>0?profit/price*100:0;
+     const line=(label,value)=>`<div class="detail-line"><span>${label}</span><strong>NT$ ${money(value)}</strong></div>`;
+     rows.push(`<article class="scenario-card"><h3>${isPromo?'活動日':'一般日'}｜免運方案${shipping}</h3><div class="scenario-content">${line('商品售價',price)}<div class="detail-heading">平台扣款</div>${line('成交手續費（'+(feeRate+(isPromo?2:0))+'%）',commission)}${line('金流與系統處理費（2.50%）',processing)}${line(shippingLabel,shippingFee)}${line('平台費用合計',total)}${line('平台費後實收',price-total)}<div class="detail-heading">成本與稅務</div>${line('進價成本'+($('costTax').value==='excluded'?'（未稅加 5.00%）':''),cost)}${line('稅務估算（'+(taxRate*100).toFixed(0)+'%）',taxValue)}${line('預購訂單（'+(preorderRate*100).toFixed(0)+'%）',preorderValue)}${line('預估實收（扣平台費與稅費）',net)}</div><div class="profit-area"><span>預估淨利 <small>淨利率 ${pct.toFixed(2)}%</small></span><strong class="${profit<0?'negative':'positive'}">NT$ ${money(profit)}</strong></div></article>`);
+   }
+   $('shopeeRows').innerHTML=rows.join('');
+ }else{
+   $('resultRows').innerHTML=['貨到付款','信用卡一次付清',...ZERO_RATES.map(x=>`信用卡 ${x.months} 期（待確認支援）`)].map(method=>`<tr><td>${method}</td><td class="num">成交費 NT$ ${money(price*feeRate/100)}；其他費率待設定</td><td class="num">${valid?`NT$ ${money(taxAmount)}`:"待計算"}</td><td class="num">${valid?`NT$ ${money(preorderAmount)}`:"待計算"}</td><td class="num">${valid?`NT$ ${money(promoAmount)}`:"待計算"}</td><td class="num">待計算</td><td class="num">待計算</td></tr>`).join('');
+ }
+ return valid;
+}
+function switchTab(tab){
+ if(!PLATFORM_NAMES[tab])return;
+ if(currentTab!=='zero')platformFeeInputs[currentTab]=$('feeRate').value;
+ currentTab=tab;
+ if(tab!=='zero')$('feeRate').value=platformFeeInputs[tab]??'0';
+ document.querySelectorAll('[data-tab]').forEach(b=>{const active=b.dataset.tab===tab;b.classList.toggle('active',active);b.setAttribute('aria-selected',String(active))});
+ $('pageTitle').textContent=PLATFORM_NAMES[tab]+'｜費用試算';
+ $('categoryField').classList.toggle('hidden',tab==='zero');
+ $('costField').classList.toggle('hidden',tab==='zero');
+ $('preorderField').classList.toggle('hidden',tab!=='shopee');
+ $('shippingField').classList.toggle('hidden',tab!=='shopee');
+ $('processingField').classList.toggle('hidden',tab!=='shopee');
+ $('rutenField').classList.toggle('hidden',tab!=='ruten');
+ $('feeHelp').classList.toggle('hidden',tab==='zero'||tab==='yahoo');
+ if(tab==='shopee'){$('feeHelp').href='https://seller.shopee.tw/edu/article/26470';$('feeHelp').textContent='成交手續費＆金流與系統處理費（蝦皮官方）'}
+ if(tab==='ruten'){$('feeHelp').href='https://pub.ruten.com.tw/service_center/000600040029.html';$('feeHelp').textContent='露天官方｜成交手續費與金流服務費收費辦法'}
+ $('yahooHelp').classList.toggle('hidden',tab!=='yahoo');
+ calculate();
+}
+// ====== 可維護區塊 3：最近 30 筆本機紀錄 ======
+function snapshot(){return{id:(globalThis.crypto&&crypto.randomUUID)?crypto.randomUUID():String(Date.now())+'-'+Math.random(),time:new Date().toISOString(),platform:currentTab,feeRate:$('feeRate').value,cost:$('cost').value,costTax:$('costTax').value,rutenPromo:$('rutenPromo').checked,price:$('price').value,tax:$('tax').value,preorder:$('preorder').value,rateStatus:currentTab==='zero'?'銀角零卡費率表 V1.0':'成交費率由使用者輸入，其他費率待設定'}}
+function save(){if(!calculate()){alert(currentTab==='zero'?'請輸入有效的商品售價':'請輸入有效的成本與售價');return}const old=records;records=[...records,snapshot()].slice(-MAX_RECORDS);if(!persist()){records=old;return}renderHistory()}
+function renderHistory(){$('count').textContent=`${records.length} / ${MAX_RECORDS}`;const area=$('history');area.replaceChildren();if(!records.length){area.textContent='目前尚無紀錄。';return}records.slice().reverse().forEach(rec=>{const wrap=document.createElement('div');wrap.className='record';const info=document.createElement('div');const title=document.createElement('strong');title.textContent=`${PLATFORM_NAMES[rec.platform]}｜售價 NT$ ${money(Number(rec.price)||0)}`;const small=document.createElement('small');small.textContent=`${new Date(rec.time).toLocaleString('zh-TW')}｜成本 NT$ ${money(Number(rec.cost)||0)}｜成交費率 ${rec.feeRate==null?'未設定':percent(rec.feeRate)}｜稅務 ${percent(Number(rec.tax||0)*100)}｜預購 ${percent(Number(rec.preorder||0)*100)}｜進價${rec.costTax==='excluded'?'未稅':'含稅'}｜金流固定2.5%｜露天促進${rec.rutenPromo?'開':'關'}｜${rec.rateStatus||'費率狀態未知'}`;info.append(title,small);const actions=document.createElement('div');actions.className='actions';const restore=document.createElement('button');restore.textContent='還原';restore.addEventListener('click',()=>{switchTab(rec.platform);$('feeRate').value=rec.feeRate??'0';if(rec.platform!=='zero')platformFeeInputs[rec.platform]=$('feeRate').value;$('cost').value=rec.cost??'';$('costTax').value=rec.costTax??'included';$('rutenPromo').checked=Boolean(rec.rutenPromo);$('price').value=rec.price??'';$('tax').value=rec.tax??'0';$('preorder').value=rec.preorder??'0';calculate();window.scrollTo({top:0,behavior:'smooth'})});const del=document.createElement('button');del.textContent='刪除';del.addEventListener('click',()=>{const old=records;records=records.filter(x=>x.id!==rec.id);if(!persist()){records=old;return}renderHistory()});actions.append(restore,del);wrap.append(info,actions);area.append(wrap)})}
+// ====== 可維護區塊 4：主題 ======
+function applyTheme(theme){document.documentElement.dataset.theme=theme;$('themeBtn').textContent=theme==='dark'?'☀️ 淺色':'🌙 深色'}
+let theme='light';try{theme=localStorage.getItem(THEME_KEY)||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light')}catch(e){}applyTheme(theme);
+$('themeBtn').addEventListener('click',()=>{theme=document.documentElement.dataset.theme==='dark'?'light':'dark';applyTheme(theme);try{localStorage.setItem(THEME_KEY,theme)}catch(e){}});
+document.querySelectorAll('[data-tab]').forEach(b=>b.addEventListener('click',()=>switchTab(b.dataset.tab)));
+['cost','costTax','price','feeRate','tax','preorder','rutenPromo'].forEach(id=>$(id).addEventListener('input',calculate));
+$('saveBtn').addEventListener('click',save);
+$('resetBtn').addEventListener('click',()=>{$('cost').value='';$('price').value='';$('feeRate').value=platformFeeInputs[currentTab]??'0';if(currentTab!=='zero')platformFeeInputs[currentTab]=$('feeRate').value;$('costTax').value='included';$('rutenPromo').checked=false;$('tax').value='0';$('preorder').value='0';calculate()});
+$('clearBtn').addEventListener('click',()=>{if(!records.length)return;if(!confirm('確定清除全部歷史紀錄？'))return;const old=records;records=[];if(!persist()){records=old;return}renderHistory()});
+records=readRecords();switchTab('shopee');renderHistory();
+</script></body></html>
